@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/orderList.css" />
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.min.js"></script>
+		<style>
+			.mui-input-group .mui-input-row:after {
+
+				height: 0px;
+
+			}
+
+			.mui-input-group .mui-input-row:before {
+
+				height: 0px;
+
+			}
+
+			.mui-input-group:before {
+
+				height: 0px;
+
+			}
+
+			.mui-input-group:after {
+
+				height: 0px;
+
+			}
+
+			.mui-btn {
+				width: 100%;
+				margin: auto;
+
+
+			}
+
+			.mui-table-view:before {
+
+				height: 0px;
+
+			}
+
+			.mui-table-view:after {
+				height: 0px;
+
+			}
+
+			.mui-table-view-cell:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 0px;
+				height: 1px;
+				content: '';
+				background-color: #f2f2f2;
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+			}
+
+			.clearLine:after {
+				height: 0px;
+			}
+
+			.sel:after {
+				content: '\e472' !important;
+				right: 9px !important;
+				font-size: 30px !important;
+				font-weight: 600 !important;
+				color: white !important;
+				
+			}
+			.sel:before {
+				content: '\e472' !important;
+				right: 9px !important;
+				font-size: 30px !important;
+				font-weight: 600 !important;
+				
+			}
+			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before {
+    font-family: Muiicons;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1;
+    color: #fff;
+    text-decoration: none;
+    background: 0 0;
+    border-radius: 0;
+    -webkit-font-smoothing: antialiased;
+}
+.mui-input-row{
+	border-bottom: 1px solid #f2f2f2;
+}
+.mui-input-row:last-child{
+	border-bottom: 0px solid #f2f2f2;
+}
+.mui-input-group .mui-input-row:after {
+   
+    background-color: #f2f2f2 !important;
+    
+}
+.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+    color: #086a8b;
+}
+		</style>
+	</head>
+	<body onload="init()">
+		<div class="mui-content" id="cont">
+			<div class="mui-content-padded" style="background: #f2f2f2;margin:0;margin-top: 0.5rem;">
+
+				<form class="mui-input-group">
+					<template v-for="(item,idx) in groups">
+						
+						<div class="mui-input-row mui-checkbox" :onclick="'mySel('+item.id+')'">
+							<label class="c3" style="font-size:0.9rem;">{{item.name}}</label>
+							<template v-if="item.isSel==0">
+								<input class="sel" :value="item.id" type="checkbox">
+								{{item.isSel}}
+							</template>
+							<template v-if="item.isSel==1">
+								<input class="sel" :value="item.id" type="checkbox" checked="checked">
+								{{item.isSel}}
+							</template>
+						</div>
+						<template v-for="(item1,idx) in item.sub">
+							<div style="padding-left:1rem;" class="mui-input-row mui-checkbox" :onclick="'mySel('+item1.id+')'">
+								<label class="c3" style="font-size:0.9rem;">{{item1.name}}</label>
+								<template v-if="item1.isSel==0">
+									<input class="sel" :value="item1.id" type="checkbox">
+									{{item.isSel}}
+								</template>
+								<template v-if="item1.isSel==1">
+									<input class="sel" :value="item1.id" type="checkbox" checked="checked">
+									{{item.isSel}}
+								</template>
+							</div>
+						</template>
+					</template>
+
+				</form>
+				<div class="mui-table-view c3" style="font-size:0.9rem;padding:0.5rem 1rem;margin-top:1rem;padding-top:0.5rem;">
+					<div class="mui-btn mui-btn-primary" onClick="saveHandel();" style="background:#086a8b;font-size:0.9rem;">
+						保存
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	var app;
+
+	var goodsID = getQueryString("id");
+	var obj = {}
+	obj.id = goodsID;
+	obj.groups = [{
+		id: 0,
+		name: "夏装",
+		isSel: 0,
+		sub: [{
+			id: 11,
+			name: "夏装1",
+			isSel: 0,
+		}]
+	}, {
+		id: 1,
+		name: "秋装",
+		isSel: 0
+	}, {
+		id: 2,
+		name: "冬装",
+		isSel: 0
+	}];
+
+	//处理选中//自己处理
+	//var groupsIds = getQueryString("groupIds").split(",");
+	var groupsIds = [1, 2]
+	for (var i = 0; i < obj.groups.length; i++) {
+		for (var j = 0; j < groupsIds.length; j++) {
+			if (obj.groups[i].id + '' == groupsIds[j] + '') {
+				obj.groups[i].isSel = 1;
+			}
+		}
+
+	}
+
+	function init() {
+		app = new Vue({
+			el: '#cont',
+			data: obj
+		});
+
+	}
+
+	function mySel(id) {
+		for (var i = 0; i < obj.groups.length; i++) {
+			if (obj.groups[i].id + '' == id + '') {
+				obj.groups[i].isSel = obj.groups[i].isSel == 0 ? 1 : 0;
+				return;
+			}
+		}
+		saveHandel()
+
+	}
+
+	function saveHandel() {
+		//保存后自己跳回去
+		//app.$data.obj
+		var ids = [];
+		for (var i = 0; i < obj.groups.length; i++) {
+			if (obj.groups[i].isSel == 1) {
+				ids.push(obj.groups[i].id);
+			}
+		}
+		console.log(ids.join(","));
+		location.href = "goodsEdit.html?id=" + obj.id;
+	}
+
+	function getQueryString(name) {
+		var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) {
+			return unescape(r[2]);
+		}
+		return null;
+	}
+</script>
